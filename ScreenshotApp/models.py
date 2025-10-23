@@ -1,5 +1,6 @@
 import os
 from django.db import models
+from django.utils import timezone
 
 
 def backup_upload_path(instance, filename):
@@ -23,22 +24,23 @@ class EmployeeScreenshotUpload(models.Model):
     def __str__(self):
         return f"{self.name} - {self.register_number}"
     
+
 class ScreenshotAnalysis(models.Model):
-    timestamp = models.DateTimeField(auto_now_add=True)
+    timestamp = models.DateTimeField(auto_now_add=True)  # when analysis happens
     employee_name = models.CharField(max_length=255)
     phone_number = models.CharField(max_length=20)
     register_number = models.CharField(max_length=50)
     
-    # backup file analysis fields
-    backup_time = models.DateTimeField(null= True, blank= True)
-    last_backup_time = models.DateTimeField(null= True, blank= True)
-    manage_google_storage_data = models.CharField(max_length=10, null= True, blank= True)
-    google_account=models.CharField( max_length=255, null= True, blank= True)
-    videos_toggle_on = models.BooleanField(null= True, blank= True)
-    
-    #chat file analysis fields
-    chats_ss_time = models.DateTimeField(null= True, blank= True)
-    last_message_time = models.DateTimeField(null= True, blank= True)
-    
+    # Backup screenshot analysis
+    device_time_backup = models.DateTimeField(null=True, blank=True)  # always current time
+    last_backup_time_ok = models.CharField(max_length=3)  # Yes/No
+    manage_google_storage_ok = models.CharField(max_length=3)  # Yes/No
+    google_account_ok = models.CharField(max_length=3)  # Yes/No
+    videos_toggle_ok = models.CharField(max_length=3)  # Yes/No
+
+    # Chat screenshot analysis
+    device_time_chat = models.DateTimeField(null=True, blank=True)  # always current time
+    last_message_ok = models.CharField(max_length=3)  # Yes/No
+
     def __str__(self):
         return f"{self.employee_name} - {self.register_number} - {self.timestamp}"
