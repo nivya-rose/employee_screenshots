@@ -1,0 +1,24 @@
+{% load static %}
+
+<form method="POST" enctype="multipart/form-data" action="{% url 'upload_screenshot' %}">
+  {% csrf_token %}
+  <label>Name: <input type="text" name="name" id="name" required></label>
+  <label>Phone Number: <input type="text" name="phone_number" id="phone" required></label>
+  <label>Register Number: <input type="text" name="register_number"></label>
+
+  <label>Backup Screenshot:
+    <input type="file" name="backup_file" id="backup_file" required>
+    <span id="backup_error" style="color:red;"></span>
+    <span id="backup_suggestion" style="color:green;"></span>
+  </label>
+
+  <label>Chat Screenshot:
+    <input type="file" name="chat_file" id="chat_file" required>
+    <span id="chat_error" style="color:red;"></span>
+    <span id="chat_suggestion" style="color:green;"></span>
+  </label>
+
+  <button type="submit">Upload</button>
+</form>
+
+<script src="{% static 'ScreenshotApp/js/upload.js' %}"></script>
