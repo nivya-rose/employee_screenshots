@@ -1,28 +1,41 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Upload Your Screenshots</title>
-    {% load static %}
-    <script src="{% static 'ScreenshotApp/js/upload_validation.js' %}"></script>
+    <title>Upload Screenshots</title>
 </head>
 <body>
-    <h1>Upload Your Screenshots</h1>
-    <form method="POST" enctype="multipart/form-data" action="{% url 'upload_screenshot' %}">
+    <!-- Display Django messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <p>
+                {{ message }}
+            </p>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Upload form -->
+    <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
-        <label>Name: <input type="text" name="name" id="name" required></label><br>
-        <label>Phone Number: <input type="text" name="phone_number" id="phone" required></label><br>
-        <label>Register Number: <input type="text" name="register_number"></label><br>
-        <label>Company Provided Email: <input type="email" name="useremail" id="user_email" required></label><br>
-        <label>Backup Screenshot: <input type="file" name="backup_file" id="backup_file" required>
-            <span id="backup_error" style="color:red;"></span>
-            <span id="backup_suggestion" style="color:green;"></span>
-        </label><br>
-        <label>Chat Screenshot: <input type="file" name="chat_file" id="chat_file" required>
-            <span id="chat_error" style="color:red;"></span>
-            <span id="chat_suggestion" style="color:green;"></span>
-        </label><br>
-        <button type="submit">Upload</button>
+
+        <label>Name:</label><br>
+        <input type="text" name="name" required><br><br>
+
+        <label>Phone Number:</label><br>
+        <input type="text" name="phone_number" required><br><br>
+
+        <label>Register Number:</label><br>
+        <input type="text" name="register_number" required><br><br>
+
+        <label>Company Email:</label><br>
+        <input type="email" name="useremail" required><br><br>
+
+        <label>Backup Screenshot:</label><br>
+        <input type="file" name="backup_file" accept="image/*" required><br><br>
+
+        <label>Chat Screenshot:</label><br>
+        <input type="file" name="chat_file" accept="image/*" required><br><br>
+
+        <button type="submit">Submit</button>
     </form>
-    <div style="color:green;">{% if messages %}{% for message in messages %}{{ message }}{% endfor %}{% endif %}</div>
 </body>
 </html>

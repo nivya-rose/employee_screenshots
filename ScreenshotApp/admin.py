@@ -1,11 +1,13 @@
 from django.contrib import admin
-from .models import EmployeeScreenshotUpload, ScreenshotAnalysis
+from .models import UserSubmission, ScreenshotAnalysis
 
-@admin.register(EmployeeScreenshotUpload)
-class EmployeeScreenshotUploadAdmin(admin.ModelAdmin):
-    list_display = ("name", "register_number", "timestamp")
+@admin.register(UserSubmission)
+class UserSubmissionAdmin(admin.ModelAdmin):
+         list_display = ['name', 'phone_number', 'register_number', 'company_email', 'timestamp']
+         # Add more customizations if needed
 
 @admin.register(ScreenshotAnalysis)
-class ScreenshotAnalysis(admin.ModelAdmin):
-    list_display = ( "timestamp", "employee_name","phone_number",  "register_number","device_time_backup","last_backup_time_ok",
-                    "manage_google_storage_ok","google_account_ok","videos_toggle_ok","device_time_chat","last_message_ok")
+class ScreenshotAnalysisAdmin(admin.ModelAdmin):
+         list_display = ['submission', 'backup_device_time', 'chat_device_time']
+         # Add more customizations if needed
+     

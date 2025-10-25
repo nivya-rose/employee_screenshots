@@ -29,3 +29,27 @@ game28.dta
 
 # Log files
 warnings.log
+
+# Virtual environment
+venv/
+env/
+.ScreenshotEnv/
+ScreenshotEnv/
+__pycache__/
+
+# Django files
+*.pyc
+*.pyo
+*.log
+db.sqlite3
+
+# Media and static uploads
+/media/
+staticfiles/
+
+# Environment variables and secrets
+.env
+
+# VSCode / IDE settings
+.vscode/
+.idea/
