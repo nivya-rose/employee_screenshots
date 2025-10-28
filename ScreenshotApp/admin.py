@@ -8,6 +8,19 @@ class UserSubmissionAdmin(admin.ModelAdmin):
 
 @admin.register(ScreenshotAnalysis)
 class ScreenshotAnalysisAdmin(admin.ModelAdmin):
-         list_display = ['submission', 'backup_device_time', 'chat_device_time']
-         # Add more customizations if needed
-     
+         list_display = ['submission',
+                         'system_time', 
+                         'backup_value', 
+                         'google_account', 
+                         'google_storage_value',
+                         'google_storage_status',
+                         'google_account_status',
+                         'videos_toggle_status',
+                         'chat_device_time',
+                          'last_message_ok',
+                            'analyzed_at',
+                            'raw_text_backup',
+                            'raw_text_chat',
+                         ]
+        
+    
