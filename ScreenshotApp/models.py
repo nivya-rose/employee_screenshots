@@ -27,72 +27,83 @@ class UserSubmission(models.Model):
     def __str__(self):
         return f"{self.name} - {self.register_number}"
 
-class ScreenshotAnalysis(models.Model):
+
+
+class WhatsAppAnalysis(models.Model):
     """
-    Stores OCR results from WhatsApp screenshots.
-    Each record corresponds to one user submission.
+    Stores OCR-extracted data from two uploaded screenshots:
+    1️⃣ WhatsApp Backup screen
+    2️⃣ WhatsApp Chat screen
+
+    Each record is linked to a user submission (UserSubmission model)
+    and holds details extracted by OCR for validation and reporting.
     """
-    submission = models.ForeignKey(UserSubmission, on_delete=models.CASCADE, related_name='analysis')
 
-    # ---------- BACKUP SCREENSHOT OCR RESULTS ----------
-    system_time = models.CharField(max_length=50, blank=True, null=True, help_text="System/device time extracted from backup screenshot.")
-    backup_value = models.CharField(max_length=100, blank=True, null=True, help_text="Raw text for 'Last backup' value (e.g. 'Today, 11:23 AM').")
-    backup_time_status = models.CharField(max_length=10, default="No", help_text="Yes if backup shows time, not date.")
+    # -------------------------------------------------------
+    # 🔗 RELATIONSHIP FIELD
+    # -------------------------------------------------------
+    submission = models.ForeignKey(
+        'UserSubmission',                      # Link to user submission
+        on_delete=models.CASCADE,              # Delete analysis if submission is deleted
+        related_name='whatsapp_analysis'       # Enables reverse access: submission.whatsapp_analysis.all()
+    )
 
-    google_storage_value = models.CharField(max_length=50, blank=True, null=True, help_text="Storage value text (e.g. '25.3 MB').")
-    google_storage_status = models.CharField(max_length=10, default="No", help_text="Yes if storage > 0KB.")
+    # -------------------------------------------------------
+    # 📸 BACKUP SCREENSHOT DATA (OCR Extracted)
+    # -------------------------------------------------------
 
-    google_account = models.CharField(max_length=255, blank=True, null=True, help_text="Extracted Google account (if any).")
-    google_account_status = models.CharField(max_length=10, default="No", help_text="Yes if account contains '.org'.")
+    # 1. Time shown on the top bar of the backup screenshot
+    backup_system_time = models.CharField(max_length=50, null=True, blank=True)
 
-    videos_toggle_status = models.CharField(max_length=10, default="No", help_text="Yes if 'Include videos' toggle detected as ON.")
+    # 2. The "Last backup" value (e.g., "Today, 10:30 AM" or "Yesterday, 9:00 PM")
+    Last_back_up = models.CharField(max_length=100, null=True, blank=True)
 
-    # ---------- CHAT SCREENSHOT OCR RESULTS ----------
-    chat_device_time = models.CharField(max_length=50, blank=True, null=True, help_text="System/device time from chat screenshot.")
-    last_message_ok = models.CharField(max_length=10, default="No", help_text="Yes if last message timestamp found.")
+    # 3. Whether the last backup occurred today ("Yes" or "No")
+    Last_backup_today = models.CharField(max_length=10, null=True, blank=True)
 
-    # ---------- RAW TEXT (DEBUGGING / LOGGING) ----------
-    raw_text_backup = models.TextField(blank=True, null=True, help_text="Full OCR text extracted from backup screenshot.")
-    raw_text_chat = models.TextField(blank=True, null=True, help_text="Full OCR text extracted from chat screenshot.")
+    # 4. "Manage Google Storage" value — if greater than 0, marked "Yes"
+    manage_google_storage = models.CharField(max_length=50, null=True, blank=True)
 
-    analyzed_at = models.DateTimeField(auto_now_add=True, help_text="Timestamp when OCR was completed.")
+    # 5. Google storage account address (e.g., user@gmail.com)
+    google_storage_account = models.CharField(max_length=150, null=True, blank=True)
+
+    # 6. Whether the Google account contains ".org" ("Yes" or "No")
+    google_account_org = models.CharField(max_length=10, null=True, blank=True)
+
+    # 7. Whether the "Include videos" toggle button is ON ("Yes" or "No")
+    include_videos_toggle = models.CharField(max_length=10, null=True, blank=True)
+
+    # -------------------------------------------------------
+    # 💬 CHAT SCREENSHOT DATA (OCR Extracted)
+    # -------------------------------------------------------
+
+    # 8. Device time shown on the top bar of the chat screenshot
+    device_time_chat = models.CharField(max_length=50, null=True, blank=True)
+
+    # 9. Whether the last visible message shows a time (not a date/yesterday)
+    last_message_ok = models.CharField(max_length=10, null=True, blank=True)
+
+    # -------------------------------------------------------
+    # 🧾 RAW OCR TEXT (Optional for Debugging or Review)
+    # -------------------------------------------------------
+
+    # Full OCR text extracted from backup screenshot (for traceability)
+    raw_text_backup = models.TextField(null=True, blank=True)
+
+    # Full OCR text extracted from chat screenshot (for traceability)
+    raw_text_chat = models.TextField(null=True, blank=True)
+
+    # -------------------------------------------------------
+    # 🕒 META INFO
+    # -------------------------------------------------------
+
+    # Automatically records when the analysis entry was created
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    # -------------------------------------------------------
+    # 🧩 STRING REPRESENTATION
+    # -------------------------------------------------------
 
     def __str__(self):
-        return f"OCR Analysis for {self.submission.name}"
-
-def analyze_whatsapp_chat_screenshot(image_path):
-    """
-    Analyzes a WhatsApp chat screenshot to extract:
-    1️⃣ System time (from status bar)
-    2️⃣ Whether the latest messages contain time instead of date
-    """
-    # Extract text using Tesseract
-    text = pytesseract.image_to_string(Image.open(image_path))
-    text_clean = text.replace("\n", " ").strip()
-
-    result = {}
-
-    # 1️⃣ Extract system time
-    # Matches "12:45", "12:45 PM", "23:15", etc.
-    time_pattern = r'\b([01]?\d|2[0-3]):[0-5]\d(?: ?[APMapm]{2})?\b'
-    times = re.findall(time_pattern, text_clean)
-    result['system_time'] = times[-1] if times else "Not found"
-
-    # 2️⃣ Check message timestamps
-    # WhatsApp messages may have either time (12:34 PM) or date (Yesterday, 25/10/2025, etc.)
-    # We consider it valid if time exists and no date-like pattern dominates
-    date_pattern = r'(\bYesterday\b|\bToday\b|\d{1,2}[/-]\d{1,2}[/-]\d{2,4})'
-
-    # Find all timestamps
-    time_found = re.search(time_pattern, text_clean)
-    date_found = re.search(date_pattern, text_clean, re.IGNORECASE)
-
-    if time_found and not date_found:
-        result['last_message_ok'] = "Yes"
-    else:
-        result['last_message_ok'] = "No"
-
-    # Save raw OCR text for debugging
-    result['raw_text'] = text_clean
-
-    return result
+        """Returns a readable name in Django Admin."""
+        return f"WhatsApp Analysis - {self.submission.name}"

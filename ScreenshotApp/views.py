@@ -3,7 +3,7 @@ from datetime import datetime
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.conf import settings
-from .models import UserSubmission, ScreenshotAnalysis
+from .models import UserSubmission, WhatsAppAnalysis
 from .utils.whatsapp_backup_ocr import analyze_whatsapp_backup_screenshot
 from .utils.whatsapp_chat_ocr import analyze_whatsapp_chat_screenshot
 
@@ -52,30 +52,23 @@ def upload_screenshot(request):
         backup_result = analyze_whatsapp_backup_screenshot(backup_path)
         chat_result = analyze_whatsapp_chat_screenshot(chat_path)
 
-        # --- Step 7: Save results to ScreenshotAnalysis model ---
-        ScreenshotAnalysis.objects.create(
+        # --- Step 7: Save results to WhatsAppAnalysis model ---
+        WhatsAppAnalysis.objects.create(
             submission=submission,
-
-            # Backup OCR
-            system_time=backup_result.get("system_time"),
-            backup_value=backup_result.get("backup_value"),
-            backup_time_status=backup_result.get("backup_time_status"),
-            google_storage_value=backup_result.get("google_storage_value"),
-            google_storage_status=backup_result.get("google_storage_status"),
-            google_account=backup_result.get("google_account"),
-            google_account_status=backup_result.get("google_account_status"),
-            videos_toggle_status=backup_result.get("videos_toggle_status"),
-
-            # Chat OCR
-            chat_device_time=chat_result.get("system_time"),
-            last_message_ok=chat_result.get("last_message_ok"),
-
-            # Raw text logs
-            raw_text_backup=backup_result.get("raw_text"),
-            raw_text_chat=chat_result.get("raw_text"),
+            backup_system_time=backup_result.get('backup_system_time'),
+            Last_back_up=backup_result.get('last_backup'),                # corrected key
+            Last_backup_today=backup_result.get('last_backup_today'),
+            manage_google_storage=backup_result.get('google_storage_value'),  # corrected key
+            google_storage_account=backup_result.get('google_storage_account'),
+            google_account_org=backup_result.get('google_account_org'),
+            include_videos_toggle=backup_result.get('videos_toggle_status'),
+            device_time_chat=chat_result.get('device_time_chat'),
+            last_message_ok=chat_result.get('last_message_today'),
+            raw_text_backup=backup_result.get('raw_text'),
+            raw_text_chat=chat_result.get('raw_text'),
         )
 
         messages.success(request, "OCR analysis completed successfully!")
         return redirect("/")
-    
+
     return render(request, "screenshots/user_upload.html")

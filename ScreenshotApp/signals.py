@@ -1,6 +1,6 @@
 from django.db.models.signals import post_save  # Example signal import (adjust based on your needs)
 from django.dispatch import receiver
-from .models import UserSubmission, ScreenshotAnalysis  # Fixed import to match models.py
+from .models import UserSubmission, WhatsAppAnalysis  # Fixed import to match models.py
 
 # Example signal handler (customize as needed)
 @receiver(post_save, sender=UserSubmission)

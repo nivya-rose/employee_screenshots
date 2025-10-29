@@ -1,32 +1,37 @@
-import pytesseract
+# utils/whatsapp_chat_ocr.py
 from PIL import Image
+import pytesseract
 import re
 
+def _preprocess_small(img: Image.Image, resize_factor=2):
+    img = img.convert("L")
+    w, h = img.size
+    img = img.resize((w*resize_factor, h*resize_factor), Image.LANCZOS)
+    return img
 
 def analyze_whatsapp_chat_screenshot(image_path):
-    """
-    OCR analysis for WhatsApp chat screenshot.
-    Extracts:
-      - System time (status bar)
-      - Whether messages contain time instead of date
-    """
-
-    text = pytesseract.image_to_string(Image.open(image_path))
-    text_clean = text.replace("\n", " ").strip()
+    img = Image.open(image_path)
+    w, h = img.size
     result = {}
 
-    # 1️⃣ Extract system time (from status bar)
-    time_pattern = r'\b([01]?\d|2[0-3]):[0-5]\d(?: ?[APMapm]{2})?\b'
-    times = re.findall(time_pattern, text_clean)
-    result['system_time'] = times[-1] if times else "Not found"
+    # 1) Try status bar top crop for device time (top 7% like backup)
+    status_crop = img.crop((0, 0, w, int(0.07*h)))
+    status_text = pytesseract.image_to_string(_preprocess_small(status_crop), config='--psm 6')
+    times = re.findall(r'\b(?:[01]?\d|2[0-3])[:.][0-5]\d(?:\s?[AaPp][Mm])?\b', status_text)
+    result['device_time_chat'] = times[-1] if times else "Not found"
 
-    # 2️⃣ Check message timestamps (must be time, not date)
-    date_pattern = r'(\bYesterday\b|\bToday\b|\d{1,2}[/-]\d{1,2}[/-]\d{2,4})'
-    time_found = re.search(time_pattern, text_clean)
-    date_found = re.search(date_pattern, text_clean, re.IGNORECASE)
+    # 2) Chat list times (right column). Crop right strip and OCR to get per-chat times.
+    right_col = img.crop((int(0.7*w), int(0.12*h), w, int(0.9*h)))
+    right_text = pytesseract.image_to_string(_preprocess_small(right_col), config='--psm 6')
+    # find first occurrence of a time like 12:21 pm etc
+    tmatch = re.search(r'\b(?:[01]?\d|2[0-3])[:.][0-5]\d(?:\s?[AaPp][Mm])?\b', right_text)
+    result['top_chat_time'] = tmatch.group(0) if tmatch else "Not found"
 
-    result['last_message_ok'] = "Yes" if time_found and not date_found else "No"
+    # 3) last_message_ok -> check for time presence and absence of 'Yesterday' or date pattern
+    if tmatch and not re.search(r'\b(Yesterday|\d{1,2}[/-]\d{1,2}[/-]\d{2,4})\b', right_text, re.IGNORECASE):
+        result['last_message_today'] = "Yes"
+    else:
+        result['last_message_today'] = "No"
 
-    # Store OCR text
-    result['raw_text'] = text_clean
+    result['raw_text'] = right_text
     return result
