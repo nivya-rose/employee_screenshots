@@ -53,3 +53,32 @@ staticfiles/
 # VSCode / IDE settings
 .vscode/
 .idea/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.swp
+
+# Django
+db.sqlite3
+/staticfiles/
+media/
+
+# Env
+.env
+*.env
+*.env.*
+
+# Virtual environment
+venv/
+env/
+ScreenshotEnv/
+
+# IDEs
+.vscode/
+.idea/
+*.iml
+*.log
+.DS_Store

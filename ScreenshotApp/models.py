@@ -43,10 +43,18 @@ class WhatsAppAnalysis(models.Model):
     # 🔗 RELATIONSHIP FIELD
     # -------------------------------------------------------
     submission = models.ForeignKey(
-        'UserSubmission',                      # Link to user submission
-        on_delete=models.CASCADE,              # Delete analysis if submission is deleted
-        related_name='whatsapp_analysis'       # Enables reverse access: submission.whatsapp_analysis.all()
+        'UserSubmission',
+        on_delete=models.CASCADE,
+        related_name='whatsapp_analysis'
     )
+
+    # Snapshot of user info from submission
+    name = models.CharField(max_length=100, null=True, blank=True)
+    phone_number = models.CharField(max_length=15, null=True, blank=True)
+    register_number = models.CharField(max_length=50, null=True, blank=True)
+    company_email = models.EmailField(null=True, blank=True)
+
+    # ... your existing OCR fields ...
 
     # -------------------------------------------------------
     # 📸 BACKUP SCREENSHOT DATA (OCR Extracted)
@@ -67,7 +75,7 @@ class WhatsAppAnalysis(models.Model):
     # 5. Google storage account address (e.g., user@gmail.com)
     google_storage_account = models.CharField(max_length=150, null=True, blank=True)
 
-    # 6. Whether the Google account contains ".org" ("Yes" or "No")
+    # 6. Whether the Google account contains "avodha" ("Yes" or "No")
     google_account_org = models.CharField(max_length=10, null=True, blank=True)
 
     # 7. Whether the "Include videos" toggle button is ON ("Yes" or "No")
@@ -103,6 +111,15 @@ class WhatsAppAnalysis(models.Model):
     # -------------------------------------------------------
     # 🧩 STRING REPRESENTATION
     # -------------------------------------------------------
+    
+    def save(self, *args, **kwargs):
+        if self.submission:
+            self.name = self.submission.name
+            self.phone_number = self.submission.phone_number
+            self.register_number = self.submission.register_number
+            self.company_email = self.submission.company_email
+        super().save(*args, **kwargs)
+        
 
     def __str__(self):
         """Returns a readable name in Django Admin."""

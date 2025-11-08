@@ -1,41 +1,83 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Upload Screenshots</title>
-</head>
-<body>
-    <!-- Display Django messages -->
+{% extends 'screenshots/base.html' %}
+{% load static %}
+
+{% block title %}Submit Screenshots{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'screenshots/css/user_upload.css' %}">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- Hidden container to pass Django messages -->
+<script type="application/json" id="django-messages">
+[
+    {% for message in messages %}
+    {"message": "{{ message|escapejs }}", "tags": "{{ message.tags }}"}{% if not forloop.last %},{% endif %}
+    {% endfor %}
+]
+</script>
+
+<script src="{% static 'js/notifications.js' %}"></script>
+
+{% endblock %}
+
+{% block content %}
+<div class="upload-container">
+    <h2>Upload Your Screenshots</h2>
+
     {% if messages %}
         {% for message in messages %}
-            <p>
-                {{ message }}
-            </p>
+            <div class="message {{ message.tags }}">{{ message }}</div>
         {% endfor %}
     {% endif %}
 
-    <!-- Upload form -->
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
 
-        <label>Name:</label><br>
-        <input type="text" name="name" required><br><br>
+        <div class="form-group">
+            {{ form.name }}
+            {% if form.name.errors %}
+                <div class="error">{{ form.name.errors|striptags }}</div>
+            {% endif %}
+        </div>
 
-        <label>Phone Number:</label><br>
-        <input type="text" name="phone_number" required><br><br>
+        <div class="form-group">
+            {{ form.phone_number }}
+            {% if form.phone_number.errors %}
+                <div class="error">{{ form.phone_number.errors|striptags }}</div>
+            {% endif %}
+        </div>
 
-        <label>Register Number:</label><br>
-        <input type="text" name="register_number" required><br><br>
+        <div class="form-group">
+            {{ form.register_number }}
+            {% if form.register_number.errors %}
+                <div class="error">{{ form.register_number.errors|striptags }}</div>
+            {% endif %}
+        </div>
 
-        <label>Company Email:</label><br>
-        <input type="email" name="useremail" required><br><br>
+        <div class="form-group">
+            {{ form.company_email }}
+            {% if form.company_email.errors %}
+                <div class="error">{{ form.company_email.errors|striptags }}</div>
+            {% endif %}
+        </div>
 
-        <label>Backup Screenshot:</label><br>
-        <input type="file" name="backup_file" accept="image/*" required><br><br>
+        <div class="form-group file-field">
+            {{ form.backup_screenshot.label_tag | cut:":" }}
+            {{ form.backup_screenshot }}
+            {% if form.backup_screenshot.errors %}
+                <div class="error">{{ form.backup_screenshot.errors|striptags }}</div>
+            {% endif %}
+        </div>
 
-        <label>Chat Screenshot:</label><br>
-        <input type="file" name="chat_file" accept="image/*" required><br><br>
+        <div class="form-group file-field">
+            {{ form.chat_screenshot.label_tag | cut:":" }}
+            {{ form.chat_screenshot }}
+            {% if form.chat_screenshot.errors %}
+                <div class="error">{{ form.chat_screenshot.errors|striptags }}</div>
+            {% endif %}
+        </div>
 
-        <button type="submit">Submit</button>
+        <button type="submit" class="btn-submit">Submit</button>
     </form>
-</body>
-</html>
+</div>
+{% endblock %}

@@ -132,3 +132,23 @@ STATICFILES_DIRS = [
 ]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+LOGIN_URL = '/admin_login/'
+LOGOUT_REDIRECT_URL = '/admin_login/' 
+LOGIN_REDIRECT_URL = '/analysis_results/'
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+
+# Email configuration for Gmail SMTP
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'nivyarosee@gmail.com'
+EMAIL_HOST_PASSWORD = 'hhsgxhfkqcojvfik'  # 16-character App Password
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+

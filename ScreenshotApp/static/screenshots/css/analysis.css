@@ -1,0 +1,236 @@
+/* --- Container Styling --- */
+.analysis-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 40px auto;
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+/* --- Heading --- */
+h1 {
+    color: #0056b3;
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+/* --- Table Wrapper --- */
+.table-wrapper {
+    overflow-x: auto;
+    border-radius: 8px;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* --- Table Base --- */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 15px;
+    min-width: 700px;
+}
+
+/* --- Table Headers & Cells --- */
+th, td {
+    border: 1px solid #e0e0e0;
+    padding: 12px 14px;
+    text-align: left;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+/* --- Header Styling --- */
+th {
+    background-color: #007bff;
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+
+/* --- Row Alternation --- */
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* --- No Data --- */
+.no-data {
+    text-align: center;
+    font-style: italic;
+    color: #777;
+    padding: 20px;
+}
+
+/* --- Hover Effect --- */
+tbody tr:hover {
+    background-color: #f1f7ff;
+    transition: background 0.2s ease-in-out;
+}
+
+/* --- Scrollbar Customization --- */
+.table-wrapper::-webkit-scrollbar {
+    height: 8px;
+}
+.table-wrapper::-webkit-scrollbar-thumb {
+    background-color: #b0b0b0;
+    border-radius: 4px;
+}
+.table-wrapper::-webkit-scrollbar-thumb:hover {
+    background-color: #888;
+}
+/* --- Date Filter Container --- */
+.filter-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* --- Filter Form Styling --- */
+.filter-form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+}
+
+.filter-form label {
+    font-weight: 600;
+    font-size: 14px;
+    color: #333;
+}
+
+.filter-form input[type="date"] {
+    padding: 6px 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.filter-form input[type="date"]:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+/* --- Export Filter --- */
+.btn-filter {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s ease;
+}
+
+.btn-filter:hover {
+    background-color: #0056b3;
+}
+
+/* --- Reset Botton --- */
+.btn-reset {
+    background-color: rgb(224, 57, 57);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s ease;
+    text-decoration: none;
+}
+
+.btn-reset:hover {
+    background-color: #bd181e;
+}
+
+/* --- Filter Export --- */
+.btn-export {
+    background-color: #24b559;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s ease;
+    text-decoration: none;
+}
+
+.btn-export:hover {
+    background-color: #059a54;
+}
+/* --- Responsive --- */
+@media (max-width: 600px) {
+    .filter-container {
+        justify-content: center;
+    }
+
+    .filter-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-form input,
+    .btn-export {
+        width: 100%;
+    }
+}
+
+/* --- Responsive Design --- */
+
+/* Tablets (≤992px) */
+@media (max-width: 992px) {
+    .analysis-container {
+        padding: 20px;
+        margin: 20px;
+    }
+    table {
+        font-size: 14px;
+        min-width: 600px;
+    }
+    th, td {
+        padding: 10px;
+    }
+}
+
+/* Mobiles (≤768px) */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 22px;
+    }
+    .analysis-container {
+        padding: 15px;
+        margin: 15px;
+    }
+    table {
+        font-size: 13px;
+        min-width: 550px;
+    }
+    th, td {
+        padding: 8px;
+    }
+}
+
+/* Small Phones (≤480px) */
+@media (max-width: 480px) {
+    h1 {
+        font-size: 20px;
+    }
+    table {
+        font-size: 12px;
+        min-width: 500px;
+    }
+    .analysis-container {
+        padding: 10px;
+    }
+}

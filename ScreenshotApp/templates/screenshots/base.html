@@ -1,0 +1,39 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Avodha Portal{% endblock %}</title>
+
+    <link rel="stylesheet" href="{% static 'screenshots/css/base.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="navbar-logo">
+            <img src="{% static 'images/logo.png' %}" alt="Avodha Logo">
+        </div>
+
+        <ul class="navbar-links">
+             {% if not user.is_superuser %}
+            <li><a href="{% url 'user_upload' %}">Submit Screenshots</a></li>
+            {% endif %}
+    
+            {% if user.is_superuser %}
+               <li><a href="{% url 'analysis_results' %}">Admin Dashboard</a></li> 
+            {% endif %} 
+
+            {% if user.is_authenticated %}
+               <li><a href="{% url 'admin_logout' %}">Logout</a></li> 
+            {% endif %}
+        </ul>
+    </nav>
+
+    <main class="main-content">
+        {% block content %}
+        {% endblock %}
+    </main>
+</body>
+</html>

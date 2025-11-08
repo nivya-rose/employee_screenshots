@@ -1,0 +1,70 @@
+{% extends 'screenshots/base.html' %}
+{% load static %}
+
+{% block title %}WhatsApp Analysis Report{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'screenshots/css/analysis.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="analysis-container">
+
+<div class="filter-container">
+    <form method="get" action="{% url 'analysis_results' %}" class="filter-form">
+    <label>Start Date:</label>
+    <input type="date" name="start_date" value="{{ start_date }}">
+    <label>End Date:</label>
+    <input type="date" name="end_date" value="{{ end_date }}">
+    <button type="submit" class="btn-filter">Filter</button>
+    <a href="{% url 'analysis_results' %}" class="btn-reset">Reset</a>
+    <a href ="{% url 'export_excel' %}?start_date={{ start_date }}&end_date={{ end_date }}" 
+    class="btn-export">Export to Excel</a>
+
+    </form>
+</div>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Employee Name</th>
+                    <th>Company Phone Number</th>
+                    <th>Registered Phone Number</th>
+                    <th>Company Provided Email</th>
+                    <th>Backup System Time</th>
+                    <th>Backup Today</th>
+                    <th>Storage Size</th>
+                    <th>Google Storage Account</th>
+                    <th>Avodha Email</th>
+                    <th>Device Chat Time</th>
+                    <th>Last Message Today?</th>
+                    <th>Created At</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for a in analyses %}
+                <tr>
+                    <td>{{ a.name }}</td>
+                    <td>{{ a.phone_number }}</td>
+                    <td>{{ a.register_number }}</td>
+                    <td>{{ a.company_email }}</td>
+                    <td>{{ a.backup_system_time }}</td>
+                    <td>{{ a.Last_backup_today }}</td>
+                    <td>{{ a.manage_google_storage }}</td>
+                    <td>{{ a.google_storage_account }}</td>
+                    <td>{{ a.google_account_org  }}</td>
+                    <td>{{ a.device_time_chat }}</td>
+                    <td>{{ a.last_message_ok }}</td>
+                    <td>{{ a.created_at|date:"d-m-Y H:i" }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="12" class="no-data">No analysis records found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
