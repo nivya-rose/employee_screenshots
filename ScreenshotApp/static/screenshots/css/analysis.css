@@ -120,7 +120,7 @@ tbody tr:hover {
     outline: none;
 }
 
-/* --- Export Filter --- */
+/* --- Filter --- */
 .btn-filter {
     background-color: #007bff;
     color: white;
@@ -130,6 +130,7 @@ tbody tr:hover {
     cursor: pointer;
     font-weight: 600;
     transition: background 0.2s ease;
+    height: 37px;
 }
 
 .btn-filter:hover {

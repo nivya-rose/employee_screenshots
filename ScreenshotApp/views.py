@@ -14,6 +14,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse
 from openpyxl import Workbook
 from datetime import datetime
+from .utils.email_sender import send_email
 
 def upload_screenshot(request):
     if request.method == "POST":
@@ -80,21 +81,20 @@ def upload_screenshot(request):
 
                 # Send email to user explaining issues
                 if submission.company_email:
-                    send_mail(
-                        subject="Screenshot Upload Rejected",
-                        message=(
+                        message_body =(
                               f"Dear {submission.name},\n\n"
                                 "Your WhatsApp screenshots upload cannot be accepted due to the following reasons:\n\n"
                                 f"- " + "\n- ".join(issues) + "\n\n"
                                 "As a result, this submission may be considered for Loss of Pay (LOP).\n\n"
                                 "Please correct the issues and upload again.\n\nThank you."
-                                            ),
+                                            )
                        
-                        from_email=settings.DEFAULT_FROM_EMAIL,
-                        recipient_list=[submission.company_email],
-                        fail_silently=False,
-                    ) 
-                    print("mail sent")
+                        send_email(
+                           to_email=submission.company_email,
+                            subject="WhatsApp Screenshot Submission Issues",
+                            message=message_body
+                        )
+                        print("mail sent")
 
                 # Show UI notification
                 messages.error(

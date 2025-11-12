@@ -1,0 +1,9 @@
+{
+    "builds" : [{
+        "src":"Employee_Screenshots/wsgi.py",
+        "use":"@vercel/python"
+    }],
+    "routers": [{
+        "src": "/(.*)"
+    }]    
+}

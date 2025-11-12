@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
-import os
+import os, json
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-+aw!hzpi5)3ldk2qe^!ol(9f@ms9jxtm0sl-+-)zf%oytjy5ga'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'whitenoise.runserver_nostatic',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -43,12 +44,14 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhitenoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    *MIDDLEWARE,
 ]
 
 ROOT_URLCONF = 'Employee_Screenshots.urls'
@@ -127,11 +130,12 @@ MEDIA_ROOT = BASE_DIR / 'media'
 GOOGLE_DRIVE_FOLDER_ID = "13qefxLpR3ZitbyCHbKR73h9Wl4pcEov-"
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-]
+
+STATICFILES_DIRS = [BASE_DIR / "static",]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+STATICFILES_STORAGE = "whitenoise.storage.CompressdManifestStaticFilesStorage"
 
 LOGIN_URL = '/admin_login/'
 LOGOUT_REDIRECT_URL = '/admin_login/' 
@@ -142,13 +146,13 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 
-# Email configuration for Gmail SMTP
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'nivyarosee@gmail.com'
-EMAIL_HOST_PASSWORD = 'hhsgxhfkqcojvfik'  # 16-character App Password
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+"""EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' 
 
+GOOGLE_CLIENT_SECRETS_FILE = BASE_DIR / 'credentials.json'  
+GOOGLE_EMAIL_SENDER = 'product.executive2@avodha.co.in' """
+
+GOOGLE_CLIENT_SECRETS_FILE = json.loads(os.getenv("GOOGLE_CLIENT_SECRETS_JSON", "{}"))  
+GOOGLE_TOKEN = json.loads(os.getenv("GMAIL_TOKEN_JSON", "{}"))
+GOOGLE_EMAIL_SENDER = 'product.executive2@avodha.co.in'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' 
