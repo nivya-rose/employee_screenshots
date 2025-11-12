@@ -1,9 +1,14 @@
 {
-  "version": 2,
   "builds": [
-    { "src": "manage.py", "use": "@vercel/python" }
+    {
+      "src": "employee_screenshots/wsgi.py",
+      "use": "@vercel/python"
+    }
   ],
-  "rewrites": [
-    { "source": "/(.*)", "destination": "manage.py" }
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "employee_screenshots/wsgi.py"
+    }
   ]
 }
