@@ -48,7 +48,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhitenoiseMiddleware',
+     "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -133,8 +133,6 @@ MEDIA_ROOT = BASE_DIR / 'media'
 GOOGLE_DRIVE_FOLDER_ID = "13qefxLpR3ZitbyCHbKR73h9Wl4pcEov-"
 
 STATIC_URL = '/static/'
-
-STATICFILES_DIRS = [BASE_DIR / "static",]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
