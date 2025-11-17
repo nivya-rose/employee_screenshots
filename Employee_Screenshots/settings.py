@@ -137,9 +137,11 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 GOOGLE_DRIVE_FOLDER_ID = "13qefxLpR3ZitbyCHbKR73h9Wl4pcEov-"
 
-STATIC_URL = BASE_DIR.parent.parent / '/static/'
+STATIC_URL = '/static/'
 
-STATICFILES_DIRS = [BASE_DIR / "ScreenshotApp",]
+STATICFILES_DIRS = [
+    BASE_DIR / "ScreenshotApp" / "static",
+]
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressdManifestStaticFilesStorage"
 
