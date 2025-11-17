@@ -134,7 +134,7 @@ GOOGLE_DRIVE_FOLDER_ID = "13qefxLpR3ZitbyCHbKR73h9Wl4pcEov-"
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressdManifestStaticFilesStorage"
 
