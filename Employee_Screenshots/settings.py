@@ -137,7 +137,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 GOOGLE_DRIVE_FOLDER_ID = "13qefxLpR3ZitbyCHbKR73h9Wl4pcEov-"
 
-STATIC_URL = '/staticfiles/'
+STATIC_URL = '/staticfiles/admin/'
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
